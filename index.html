@@ -92,12 +92,48 @@
         .seccion-header { background: var(--navy); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.88rem; letter-spacing: 0.03em; flex-wrap: wrap; gap: 6px; }
         .seccion-header-btns { display: flex; gap: 6px; align-items: center; }
         .tabla-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        /* MOBILE: tabla con scroll horizontal si necesita */
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 340px; }
         th, td { border-bottom: 1px solid var(--border); padding: 8px 4px; text-align: center; }
-        th { background: #f8fafc; font-weight: 600; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.04em; }
+        th { background: #f8fafc; font-weight: 600; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.04em; white-space: nowrap; }
         td input { width: 100%; padding: 6px 4px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--text); background: white; outline: none; min-width: 0; transition: border 0.15s; min-height: 44px; }
         td input:focus { border-color: var(--gold); }
-        td input[readonly] { background: #f8fafc; color: var(--success); font-weight: 700; border-color: transparent; font-size: 0.78rem; min-height: unset; }
+        td input[readonly] { background: #f8fafc; color: var(--success); font-weight: 700; border-color: transparent; font-size: 0.82rem; min-height: unset; white-space: nowrap; }
+
+        /* DESKTOP */
+        /* CHOFER TABLE - anchos base */
+        #pantalla-chofer-reporte .col-fecha { width: 95px; }
+        #pantalla-chofer-reporte .col-sacos { width: 55px; }
+        #pantalla-chofer-reporte .col-plantel { width: 75px; }
+        #pantalla-chofer-reporte .col-resp { width: 90px; }
+        #pantalla-chofer-reporte .col-x { width: 28px; }
+
+        @media (min-width: 600px) {
+            .cuenta-body { padding: 20px; }
+            table { font-size: 0.92rem; min-width: unset; table-layout: auto; }
+            th { font-size: 0.84rem; }
+            th, td { padding: 11px 10px; }
+            td input { font-size: 0.92rem; padding: 8px 8px; min-height: unset; }
+            td input[readonly] { font-size: 0.92rem; }
+            .btn-sm { padding: 5px 12px; font-size: 0.82rem; }
+            .grid-planteles { grid-template-columns: repeat(4, 1fr); }
+            /* En desktop: limitar ancho de columnas para que no se estiren feo */
+            .seccion table th, .seccion table td { white-space: nowrap; }
+            #bodyChofer td input, #bodySacos td input { width: 100%; }
+            /* Proveedor no se estira infinito en desktop */
+            .seccion table { max-width: 100%; }
+            .seccion table th:nth-child(2), .seccion table td:nth-child(2) { max-width: 220px; }
+            /* date inputs chofer/sacos en desktop tamaño normal */
+            #bodyChofer td input[style], #bodySacos td input { font-size: 0.92rem !important; padding: 8px !important; }
+            /* Sacos columna ancho suficiente en desktop */
+            #pantalla-chofer-reporte th:nth-child(3), #pantalla-chofer-reporte td:nth-child(3) { min-width: 70px; }
+            #pantalla-chofer-reporte th:nth-child(1), #pantalla-chofer-reporte td:nth-child(1) { min-width: 100px; }
+            /* En desktop las columnas de chofer se expanden con el contenido */
+            #pantalla-chofer-reporte .col-fecha { width: auto; min-width: 100px; }
+            #pantalla-chofer-reporte .col-sacos { width: auto; min-width: 70px; }
+            #pantalla-chofer-reporte .col-plantel { width: auto; min-width: 90px; }
+            #pantalla-chofer-reporte .col-resp { width: auto; min-width: 100px; }
+        }
 
         /* STICKY GUARDAR */
         .cuenta-acciones-sticky { position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding: 12px 16px; background: var(--white); border-top: 1px solid var(--border); box-shadow: 0 -4px 20px rgba(0,0,0,0.1); z-index: 90; }
@@ -226,7 +262,7 @@
                     <button class="btn btn-gold btn-sm btn-add" onclick="agregarFila('bodyOro')">+ Venta</button>
                 </div>
             </div>
-            <div class="tabla-wrap"><table><thead><tr><th style="width:55px">Kilate</th><th style="width:60px">Peso(g)</th><th style="width:70px">Precio</th><th>Total</th><th style="width:28px"></th></tr></thead><tbody id="bodyOro"></tbody></table></div>
+            <div class="tabla-wrap"><table><thead><tr><th style="width:55px">Kilate</th><th style="width:60px">Peso(g)</th><th style="width:65px">Precio</th><th style="width:90px">Total</th><th style="width:30px"></th></tr></thead><tbody id="bodyOro"></tbody></table></div>
         </div>
 
         <div class="seccion">
@@ -237,7 +273,7 @@
                     <button class="btn btn-gold btn-sm btn-add" onclick="agregarFila('bodySacos')">+ Sacos</button>
                 </div>
             </div>
-            <div class="tabla-wrap"><table><thead><tr><th style="width:75px">Fecha</th><th>Proveedor</th><th style="width:55px">Cant.</th><th style="width:55px">Precio</th><th style="min-width:80px">Total</th><th style="width:28px"></th></tr></thead><tbody id="bodySacos"></tbody></table></div>
+            <div class="tabla-wrap"><table><thead><tr><th style="width:85px">Fecha</th><th style="width:83px">Proveedor</th><th style="width:55px">Cant.</th><th style="width:55px">Precio</th><th style="width:85px">Total</th><th style="width:30px"></th></tr></thead><tbody id="bodySacos"></tbody></table></div>
         </div>
 
         <div class="seccion">
@@ -255,7 +291,7 @@
 
         <div class="seccion">
             <div class="seccion-header">🤝 REPARTO DE UTILIDADES <button class="btn btn-gold btn-sm btn-add" onclick="agregarFilaReparto()">+ Socio</button></div>
-            <div class="tabla-wrap"><table><thead><tr><th>Socio</th><th style="width:50px">Pilas</th><th>Recibe</th><th style="width:28px"></th></tr></thead><tbody id="bodyReparto"></tbody></table></div>
+            <div class="tabla-wrap"><table><thead><tr><th>Socio</th><th style="width:70px">Pilas</th><th>Recibe</th><th style="width:30px"></th></tr></thead><tbody id="bodyReparto"></tbody></table></div>
         </div>
 
         <div style="height:80px"></div>
@@ -307,13 +343,12 @@
             <div class="tabla-wrap">
                 <table>
                     <thead><tr>
-                        <th style="width:70px">Fecha</th>
+                        <th class="col-fecha">Fecha</th>
                         <th>Proveedor</th>
-                        <th style="width:50px">Sacos</th>
-                        <th style="width:75px">Plantel</th>
-                        <th style="width:85px">Responsable</th>
-                        <th style="width:75px">Volqueta</th>
-                        <th style="width:28px"></th>
+                        <th class="col-sacos">Sacos</th>
+                        <th class="col-plantel">Plantel</th>
+                        <th class="col-resp">Responsable</th>
+                        <th class="col-x"></th>
                     </tr></thead>
                     <tbody id="bodyChofer"></tbody>
                 </table>
@@ -554,9 +589,8 @@
         var del = '<button class="btn btn-red btn-sm btn-del-chofer" onclick="this.closest(\'tr\').remove();contarSacos()">✕</button>';
         var plantelVal = data.plantel||'';
         var respVal = data.responsable||'';
-        var volqVal = data.volqueta||'';
         tr.innerHTML =
-            '<td><input type="date" value="'+(data.fecha||'')+'"></td>'+
+            '<td><input type="text" value="'+(data.fecha ? convertirFechaCorta(data.fecha) : '')+'" placeholder="07-may" style="font-size:0.78rem;padding:4px 2px;min-height:unset;" onblur="this.value=formatearFecha(this.value)"></td>'+
             '<td><input type="text" value="'+(data.proveedor||'')+'" placeholder="Proveedor"></td>'+
             '<td><input type="number" value="'+(data.sacos||'')+'" oninput="contarSacos()" placeholder="0"></td>'+
             '<td><div class="dropdown-wrap">'+
@@ -573,12 +607,6 @@
                     '<div class="dropdown-opt" onclick="seleccionarOpt(this,\'Junior\')">Junior</div>'+
                     '<div class="dropdown-opt" onclick="seleccionarOpt(this,\'Bresny\')">Bresny</div>'+
                     '<div class="dropdown-opt" onclick="seleccionarOpt(this,\'Plantel\')">Plantel</div>'+
-                '</div></div></td>'+
-            '<td><div class="dropdown-wrap">'+
-                '<button class="btn-selector'+(volqVal?' selected':'')+'" onclick="toggleDropdown(this)">'+(volqVal||'Volqueta')+'</button>'+
-                '<div class="dropdown-menu hidden">'+
-                    '<div class="dropdown-opt" onclick="seleccionarOpt(this,\'Terramax\')">Terramax</div>'+
-                    '<div class="dropdown-opt" onclick="seleccionarOpt(this,\'Sairys\')">Sairys</div>'+
                 '</div></div></td>'+
             '<td>'+del+'</td>';
         tbody.appendChild(tr);
@@ -616,7 +644,13 @@
         document.querySelectorAll('#bodyChofer tr').forEach(function(f){
             var inputs=f.querySelectorAll('input');
             var btns=f.querySelectorAll('.btn-selector');
-            filas.push({fecha:inputs[0]?inputs[0].value:'',proveedor:inputs[1]?inputs[1].value:'',sacos:inputs[2]?inputs[2].value:'',plantel:btns[0]?btns[0].innerText:'',responsable:btns[1]?btns[1].innerText:'',volqueta:btns[2]?btns[2].innerText:''});
+            filas.push({
+                fecha: inputs[0]?inputs[0].value:'',
+                proveedor: inputs[1]?inputs[1].value:'',
+                sacos: inputs[2]?inputs[2].value:'',
+                plantel: btns[0]?btns[0].innerText:'',
+                responsable: btns[1]?btns[1].innerText:''
+            });
         });
         return filas;
     }
@@ -742,6 +776,20 @@
     }
 
     var MESES_ABR={enero:'ene',febrero:'feb',marzo:'mar',abril:'abr',mayo:'may',junio:'jun',julio:'jul',agosto:'ago',septiembre:'sep',octubre:'oct',noviembre:'nov',diciembre:'dic'};
+    var MESES_CORTOS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+    function convertirFechaCorta(f) {
+        if (!f) return '';
+        f = String(f).trim();
+        // Formato YYYY-MM-DD → dd-mes
+        var match = f.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (match) {
+            var dia = match[3];
+            var mes = MESES_CORTOS[parseInt(match[2])-1] || match[2];
+            return dia + '-' + mes;
+        }
+        return f;
+    }
     function formatearFecha(val){ val=val.trim().toLowerCase(); for(var m in MESES_ABR){ if(val.indexOf(m)!==-1) return val.replace(m,MESES_ABR[m]).trim(); } return val; }
     function fmtInput(v){ var n=parseInt(String(v).replace(/^L\s*/,'').replace(/[^0-9]/g,''))||0; return n>0?'L '+n.toLocaleString('es-HN'):''; }
     function agregarPrefijo(input){ var v=parseInt(String(input.value).replace(/^L\s*/,'').replace(/[^0-9]/g,''))||0; input.value=v>0?'L '+v.toLocaleString('es-HN'):''; calcularTodo(); }
