@@ -462,26 +462,55 @@
             if (res.error) throw res.error;
 
             var registros = [];
-            var dIni = new Date(fechaIni);
-            var dFin = new Date(fechaFin);
-            dFin.setHours(23,59,59);
+            var iniStr = fechaIni; // formato 2026-05-01
+            var finStr = fechaFin; // formato 2026-05-15
+
+            // Determinar el año del rango para reconstruir fechas cortas
+            var anioRango = fechaIni.split('-')[0];
+
+            var MESES_NUM = {ene:'01',feb:'02',mar:'03',abr:'04',may:'05',jun:'06',jul:'07',ago:'08',sep:'09',oct:'10',nov:'11',dic:'12'};
+
+            // Normaliza cualquier formato de fecha a YYYY-MM-DD
+            function normalizarFecha(f) {
+                if (!f) return '';
+                f = String(f).trim().toLowerCase();
+                // Ya está en formato YYYY-MM-DD
+                if (/^\d{4}-\d{2}-\d{2}$/.test(f)) return f;
+                // Formato dd-mes o dd mes (13-may, 13 may, 6-may)
+                var m = f.match(/^(\d{1,2})[\s-]+([a-z]{3})/);
+                if (m) {
+                    var dia = m[1].padStart(2, '0');
+                    var mesNum = MESES_NUM[m[2]];
+                    if (mesNum) return anioRango + '-' + mesNum + '-' + dia;
+                }
+                return f;
+            }
+
+            var debugInfo = { totalReportes: 0, conPerino: 0, fechasEncontradas: [] };
 
             (res.data || []).forEach(function(reporte) {
+                debugInfo.totalReportes++;
                 var filas = typeof reporte.filas==='string' ? JSON.parse(reporte.filas) : (reporte.filas||[]);
                 filas.forEach(function(f) {
                     if (!f.fecha || !f.plantel) return;
-                    // Verificar plantel
+                    if (f.plantel === plantelChofer) {
+                        debugInfo.conPerino++;
+                        debugInfo.fechasEncontradas.push(f.fecha);
+                    }
                     if (f.plantel !== plantelChofer) return;
-                    // Verificar fecha en rango
-                    var df = new Date(f.fecha);
-                    if (df >= dIni && df <= dFin) {
-                        registros.push(f);
+                    var fechaNorm = normalizarFecha(f.fecha);
+                    if (fechaNorm >= iniStr && fechaNorm <= finStr) {
+                        // Guardar con fecha normalizada para mostrar bien
+                        registros.push({ fecha: fechaNorm, proveedor: f.proveedor, sacos: f.sacos });
                     }
                 });
             });
 
             if (!registros.length) {
-                toast('No se encontraron registros en ese rango', 'error');
+                console.log('DEBUG Importar:', JSON.stringify(debugInfo));
+                console.log('Rango buscado:', iniStr, 'a', finStr);
+                console.log('Plantel buscado:', plantelChofer);
+                toast('No hay registros. Plantel "'+plantelChofer+'": '+debugInfo.conPerino+' encontrados.', 'error');
                 return;
             }
 
